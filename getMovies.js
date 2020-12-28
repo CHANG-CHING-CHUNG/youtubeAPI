@@ -14,3 +14,4 @@ async function g() {
   });
 }
 g();
+// dbController.updateMovieTrailer();

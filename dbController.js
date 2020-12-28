@@ -100,6 +100,24 @@ const dbController = {
       await client.close();
     }
   },
+  async updateMovieTrailer(movieName, trailer) {
+    const client = new MongoClient(url, { useUnifiedTopology: true });
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const col = db.collection("movies");
+      const filter = { name: movieName };
+      const updateDoc = {
+        $set: trailer,
+      };
+      const result = await col.updateOne(filter, updateDoc);
+      console.log(
+        `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      );
+    } finally {
+      await client.close();
+    }
+  },
 };
 
 module.exports = dbController;
