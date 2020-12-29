@@ -1,10 +1,25 @@
 const fs = require("fs");
 
-const data = fs
-  .readFileSync("movieName.txt", "utf-8")
-  .split(",")
-  .map((movie) => {
-    return movie.replace(/\r/, "");
-  });
+function filterMovieDataFromTxt() {
+  const movieIntheaters = fs
+    .readFileSync("moviesIntheaters.txt", "utf-8")
+    .split(",")
+    .map((movie) => {
+      return movie.replace(/\r/, "");
+    });
+  const movieThisWeek = fs
+    .readFileSync("moviesThisWeek.txt", "utf-8")
+    .split(",")
+    .map((movie) => {
+      return movie.replace(/\r/, "");
+    });
 
-module.exports = data;
+  return {
+    movieIntheaters,
+    movieThisWeek,
+  };
+}
+
+module.exports = {
+  filterMovieDataFromTxt,
+};

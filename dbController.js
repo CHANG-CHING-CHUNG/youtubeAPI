@@ -36,6 +36,23 @@ const dbController = {
       await client.close();
     }
   },
+  async getAllMoviesThisWeek() {
+    const client = new MongoClient(url, { useUnifiedTopology: true });
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const col = db.collection("movies_thisweek");
+      const cursor = col.find();
+      // print a message if no documents were found
+      if ((await cursor.count()) === 0) {
+        console.log("No documents found!");
+      }
+      console.log("here");
+      return await cursor.toArray();
+    } finally {
+      await client.close();
+    }
+  },
   async getOneLatestMovie(type) {
     const client = new MongoClient(url, { useUnifiedTopology: true });
     try {
@@ -106,6 +123,24 @@ const dbController = {
       await client.connect();
       const db = client.db(dbName);
       const col = db.collection("movies");
+      const filter = { name: movieName };
+      const updateDoc = {
+        $set: trailer,
+      };
+      const result = await col.updateOne(filter, updateDoc);
+      console.log(
+        `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      );
+    } finally {
+      await client.close();
+    }
+  },
+  async updateTrailerForMovieThisweek(movieName, trailer) {
+    const client = new MongoClient(url, { useUnifiedTopology: true });
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const col = db.collection("movies_thisweek");
       const filter = { name: movieName };
       const updateDoc = {
         $set: trailer,

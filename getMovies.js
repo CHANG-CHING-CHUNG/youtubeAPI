@@ -1,17 +1,46 @@
 const dbController = require("./dbController");
 const fs = require("fs");
 
-async function g() {
+async function getAllmovieList() {
   let movies = await dbController.getAllMoviesInTheaters();
-  movies = movies.map((movie) => {
+  let newMovieList = [];
+  movies.forEach((movie) => {
+    if (!movie.thumbnails) {
+      newMovieList.push(movie);
+    }
+  });
+  newMovieList = newMovieList.map((movie) => {
     return "\r" + movie.name;
   });
-  fs.writeFile("movieName.txt", movies, (err) => {
+  console.log(newMovieList);
+  fs.writeFile("moviesIntheaters.txt", newMovieList, (err) => {
     if (err) {
       return console.log(err);
     }
     console.log("data 寫入成功");
   });
 }
-g();
+async function getAllmovieThisWeekList() {
+  let movies = await dbController.getAllMoviesThisWeek();
+  let newMovieList = [];
+  movies.forEach((movie) => {
+    if (!movie.thumbnails) {
+      newMovieList.push(movie);
+    }
+  });
+  newMovieList = newMovieList.map((movie) => {
+    return "\r" + movie.name;
+  });
+  console.log(newMovieList);
+  fs.writeFile("moviesThisWeek.txt", newMovieList, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("data 寫入成功");
+  });
+}
+module.exports = {
+  getAllmovieList,
+  getAllmovieThisWeekList,
+};
 // dbController.updateMovieTrailer();
