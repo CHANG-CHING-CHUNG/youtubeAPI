@@ -10,8 +10,10 @@ const { clearInterval } = require("timers");
 // EMBEDURL + res.data.items[0].id.videoId
 // .snippet.title.match(/預告/g)
 
-async function getMovieTrailer(movieList) {
-  let count = 1;
+async function getMovieTrailer(type, movieList) {
+  let count = 0;
+  console.log("list", movieList);
+  console.log("type", type);
   const interval = setInterval(async () => {
     try {
       if (!movieList[count]) {
@@ -38,7 +40,12 @@ async function getMovieTrailer(movieList) {
           thumbnails,
         };
         console.log(movieName);
-        await dbController.updateMovieTrailer(movieName, trailer);
+        if (type === "theater") {
+          await dbController.updateMovieTrailer(movieName, trailer);
+        } else if (type === "thisweek") {
+          console.log("here is this week");
+          await dbController.updateTrailerForMovieThisweek(movieName, trailer);
+        }
       }
       count++;
     } catch (error) {

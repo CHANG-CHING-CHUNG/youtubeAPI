@@ -20,23 +20,24 @@ async function filterMovieData(done) {
   let { movieIntheaters, movieThisWeek } = filterMovieDataFromTxt();
   theater = movieIntheaters;
   thisweek = movieThisWeek;
+  // console.log(theater);
   done();
 }
 
 function getMovieTrailerInTheaters(done) {
-  getMovieTrailer(theater);
-
+  // console.log(theater);
+  getMovieTrailer("theater", theater);
   done();
 }
 function getMovieTrailerThisWeek(done) {
-  getMovieTrailer(thisweek);
+  getMovieTrailer("thisweek", thisweek);
   done();
 }
 
 exports.default = series(
-  getMovieIntheaterList,
+  // getMovieIntheaterList,
   getMovieThisWeekList,
   filterMovieData,
-  getMovieTrailerInTheaters,
+  // getMovieTrailerInTheaters
   getMovieTrailerThisWeek
 );
