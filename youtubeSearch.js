@@ -22,12 +22,17 @@ async function getMovieTrailer(type, movieList) {
       let hasTrailer = false;
       const res = await axios({
         method: "get",
-        url: APIURL + encodeURI(movieList[count]),
+        url: APIURL + encodeURI(`${movieList[count]}預告`),
       });
       res.data.items.forEach((movie) => {
-        if (movie.snippet.title.match(/預告/g)) {
+        let regexMovieName = new RegExp(movieList[count]);
+        if (
+          movie.snippet.title.match(/預告/g) &&
+          movie.snippet.title.match(regexMovieName) &&
+          movie.snippet.title.match(regexMovieName)[0] === movieList[count]
+        ) {
+          console.log("title", movie.snippet.title);
           hasTrailer = true;
-          console.log("2", movie.snippet.title);
           return;
         }
       });
@@ -43,9 +48,10 @@ async function getMovieTrailer(type, movieList) {
         if (type === "theater") {
           await dbController.updateMovieTrailer(movieName, trailer);
         } else if (type === "thisweek") {
-          console.log("here is this week");
           await dbController.updateTrailerForMovieThisweek(movieName, trailer);
         }
+      } else {
+        console.log(`${movieList[count]} 電影沒有預告`);
       }
       count++;
     } catch (error) {
@@ -54,12 +60,5 @@ async function getMovieTrailer(type, movieList) {
     }
   }, 2000);
 }
-
-// fs.writeFile("trailer.json", JSON.stringify(trailerArr), (err) => {
-//   if (err) {
-//     return console.log(err);
-//   }
-//   console.log("data 寫入成功");
-// });
 
 module.exports = getMovieTrailer;

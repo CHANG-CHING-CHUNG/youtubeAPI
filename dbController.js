@@ -30,7 +30,6 @@ const dbController = {
       if ((await cursor.count()) === 0) {
         console.log("No documents found!");
       }
-      console.log("here");
       return await cursor.toArray();
     } finally {
       await client.close();
@@ -47,7 +46,6 @@ const dbController = {
       if ((await cursor.count()) === 0) {
         console.log("No documents found!");
       }
-      console.log("here");
       return await cursor.toArray();
     } finally {
       await client.close();

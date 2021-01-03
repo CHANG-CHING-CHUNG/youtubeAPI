@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-function filterMovieDataFromTxt() {
+async function filterMovieDataFromTxt() {
   const movieIntheaters = fs
     .readFileSync("moviesIntheaters.txt", "utf-8")
     .split(",")
@@ -14,6 +14,7 @@ function filterMovieDataFromTxt() {
       return movie.replace(/\r/, "");
     });
 
+  console.log(movieThisWeek);
   return {
     movieIntheaters,
     movieThisWeek,
