@@ -14,7 +14,6 @@ async function filterMovieDataFromTxt() {
       return movie.replace(/\r/, "");
     });
 
-  console.log(movieThisWeek);
   return {
     movieIntheaters,
     movieThisWeek,

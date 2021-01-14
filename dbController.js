@@ -115,6 +115,53 @@ const dbController = {
       await client.close();
     }
   },
+  async getMoviesWithoutTrailer(collectionName) {
+    const client = new MongoClient(url, { useUnifiedTopology: true });
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const col = db.collection(collectionName);
+      const options = {
+        sort: { releaseDate: -1 },
+      };
+      const cursor = await col.find();
+      // print a message if no documents were found
+      if ((await cursor.count()) === 0) {
+        console.log("No documents found!");
+      }
+      const movies = await cursor.toArray();
+      const moviesWithoutTrailer = movies.filter((movie) => {
+        if (movie.thumbnails === undefined || movie.trailer === undefined) {
+          return true;
+        }
+        return false;
+      });
+      return moviesWithoutTrailer;
+    } finally {
+      await client.close();
+    }
+  },
+  async addTrailerAndthumbnailFields(collectionName, movieName) {
+    const client = new MongoClient(url, { useUnifiedTopology: true });
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const col = db.collection(collectionName);
+      const filter = { name: movieName };
+      const updateDoc = {
+        $set: {
+          trailer: "",
+          thumbnails: "",
+        },
+      };
+      const result = await col.updateOne(filter, updateDoc);
+      console.log(
+        `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      );
+    } finally {
+      await client.close();
+    }
+  },
   async updateMovieTrailer(movieName, trailer) {
     const client = new MongoClient(url, { useUnifiedTopology: true });
     try {

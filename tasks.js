@@ -2,9 +2,6 @@ const { getAllmovieList, getAllmovieThisWeekList } = require("./getMovies");
 const { filterMovieDataFromTxt } = require("./movieList");
 const getMovieTrailer = require("./youtubeSearch");
 
-let theater;
-let thisweek;
-
 async function getMovieIntheaterList() {
   console.log("獲得 movies_intheaters 電影清單");
   await getAllmovieList();
@@ -15,27 +12,25 @@ async function getMovieThisWeekList() {
   await getAllmovieThisWeekList();
 }
 
-async function filterMovieData() {
-  let { movieIntheaters, movieThisWeek } = await filterMovieDataFromTxt();
-  theater = movieIntheaters;
-  thisweek = movieThisWeek;
-  console.log("從 txt 抓取本週電影", thisweek);
-  console.log("從 txt 抓取上映中電影", theater);
-}
-
-async function getMovieTrailerInTheaters() {
+async function getMovieTrailerInTheaters(movieIntheaters) {
   console.log("從 Youtube 抓取電影預告並放入 DB movies_intheaters");
-  await getMovieTrailer("theater", theater);
+
+  console.log("filterMovieDataFromTxt" + movieIntheaters);
+  await getMovieTrailer("theater", movieIntheaters);
 }
-async function getMovieTrailerThisWeek() {
+async function getMovieTrailerThisWeek(movieThisWeek) {
   console.log("從 Youtube 抓取電影預告並放入 DB movies_thisweek");
-  await getMovieTrailer("thisweek", thisweek);
+  console.log("filterMovieDataFromTxt" + movieThisWeek);
+  await getMovieTrailer("thisweek", movieThisWeek);
 }
 
+async function runAsyncTasks() {
+  await getMovieThisWeekList();
+  await getMovieIntheaterList();
+  let { movieIntheaters, movieThisWeek } = await filterMovieDataFromTxt();
+  await getMovieTrailerThisWeek(movieThisWeek);
+  await getMovieTrailerInTheaters(movieIntheaters);
+}
 module.exports = {
-  getMovieThisWeekList,
-  getMovieIntheaterList,
-  filterMovieData,
-  getMovieTrailerThisWeek,
-  getMovieTrailerInTheaters,
+  runAsyncTasks,
 };
